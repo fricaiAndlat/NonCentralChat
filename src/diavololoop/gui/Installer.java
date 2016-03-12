@@ -59,7 +59,8 @@ public class Installer extends JFrame{
 		
 		installPage[0].add(new JPlaneLabel("<html>"+Lang.getCurrent().get("install.welcome")+"</html>"));
 		
-		installPage[1].add(new SecureRandomBuilder(1000, 16, JDarkPlane.DEFAULT_LIGHT_GRAY, JDarkPlane.DEFAULT_AMBIENT));
+		installPage[1].add(new SecureRandomBuilder(128, 10, JDarkPlane.DEFAULT_LIGHT_GRAY, JDarkPlane.DEFAULT_AMBIENT), BorderLayout.CENTER);
+		installPage[1].add(new JPlaneLabel("<html>"+Lang.getCurrent().get("install.random")+"</html>"), BorderLayout.NORTH);
 		
 		content.add( installPage[0], String.valueOf(0) );
 		content.add( installPage[1], String.valueOf(1) );

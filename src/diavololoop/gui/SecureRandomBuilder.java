@@ -1,10 +1,10 @@
 package diavololoop.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.security.SecureRandom;
 
 import javax.swing.JComponent;
@@ -12,8 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import diavololoop.gui.util.JDarkPlanePanel;
+import diavololoop.gui.util.JPlaneProgressBar;
 
-public class SecureRandomBuilder extends JPanel{
+
+public class SecureRandomBuilder extends JDarkPlanePanel{
 	
 	private JLabel[][] choosePanel;
 	private SecureRandom random = new SecureRandom();
@@ -25,11 +27,17 @@ public class SecureRandomBuilder extends JPanel{
 	private int r0,g0,b0;
 	private int rr, gg, bb;
 	
+	private JPlaneProgressBar progress;
+	
 	public SecureRandomBuilder(int times, int width, Color low, Color high){
+		JDarkPlanePanel h1 = new JDarkPlanePanel();
+		
 		choosePanel = new JLabel[width][width];
 		values = new byte[width][width];
-		setLayout(new GridLayout(width, width, 0, 0));
+		h1.setLayout(new GridLayout(width, width, 0, 0));
+		setLayout(new BorderLayout());
 		seed = new byte[times];
+		progress = new JPlaneProgressBar(0, times);
 		
 		this.nWidth 	= width;
 		Listener listener = new Listener();
@@ -37,7 +45,7 @@ public class SecureRandomBuilder extends JPanel{
 			for(int j = 0; j < width; ++j){
 				choosePanel[i][j] = new JLabel();
 				choosePanel[i][j].setOpaque(true);
-				add(choosePanel[i][j]);
+				h1.add(choosePanel[i][j]);
 				choosePanel[i][j].addMouseListener(listener);
 			}
 		}
@@ -50,6 +58,10 @@ public class SecureRandomBuilder extends JPanel{
 		bb = high.getBlue()	 - b0;
 		
 		reSeed();
+		
+		add(h1, BorderLayout.CENTER);
+		add(progress, BorderLayout.SOUTH);
+		
 	}
 	
 	private Color getColor(double value){
@@ -65,12 +77,22 @@ public class SecureRandomBuilder extends JPanel{
 		}
 	}
 	
+	public SecureRandom getFinal(){
+		if(seedPointer != seed.length){
+			return null;
+		}
+		SecureRandom random = new SecureRandom();
+		random.setSeed(seed);
+		return random;
+	}
+	
 	private void onSeedTile(int x, int y){
 		if(seedPointer >= seed.length){
 			return;
 		}
 		seed[seedPointer++] = values[x][y];
 		reSeed();
+		progress.setValue(seedPointer);
 	}
 	
 	
@@ -119,5 +141,6 @@ public class SecureRandomBuilder extends JPanel{
 		}
 		
 	}
+	
 	
 }
